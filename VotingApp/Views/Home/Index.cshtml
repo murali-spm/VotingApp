@@ -1,0 +1,105 @@
+﻿@model Voting.Common.DTO.ElectionDTO;
+@using Voting.Common
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-5 border border-primary">
+            <div class="row voterBG ">
+                <div class="col-11">Voters</div>
+                <div class="col-1">
+                    <a asp-area="" asp-controller="Voter" asp-action="Add">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8 border border-primary fw-bold text-center">Name</div>
+                <div class="col-4 border border-primary fw-bold text-center">Has Voted?</div>
+            </div>
+            @if (Model.Voters != null)
+            {
+                foreach (var voterDTO in Model.Voters)
+                {
+                    <div class="row">
+                        <div class="col-8 border border-primary text-center">@voterDTO.Name</div>
+                        <div class="col-4 border border-primary text-center">@(voterDTO.HasVoted == true ? "Y" : "X")</div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="col-2"></div>
+        <div class="col-5  border border-primary">
+            <div class="row candidateBG ">
+                <div class="col-11">Candidates</div>
+                <div class="col-1">
+                    <a asp-area="" asp-controller="Candidate" asp-action="Add">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-8 border border-primary fw-bold text-xl-center">Name</div>
+                <div class="col-4 border border-primary fw-bold text-xl-center">Votes</div>
+            </div>
+            @if (Model.Candidates != null)
+            {
+                foreach (var candidateDTO in Model.Candidates)
+                {
+                    <div class="row">
+                        <div class="col-8 border border-primary text-center">@candidateDTO.Name</div>
+                        <div class="col-4 border border-primary text-center">@candidateDTO.TotalVotes</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 "><hr /></div>
+    </div>
+</div>
+<form asp-controller="voter" asp-action="castvote" method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 fw-bold medFont">Vote!</div>
+        </div>
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-3">
+                @Html.DropDownList("CastVoteDTO.Voter", new SelectList(Model.Voters, "Name", "Name"), "I am", new { @class = "form-control" })
+            </div>
+            <div class="col-3">
+                @Html.DropDownList("CastVoteDTO.Candidate", new SelectList(Model.Candidates, "Name", "Name"), "I vote for", new { @class = "form-control" })
+            </div>
+            <div class="col-5">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-info" onclick="location.href='@Url.Action("reset", "home")'">Reset All</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12  "></div>
+        </div>
+        <div class="row topMarginSpace">
+            @if (TempData["Success"] != null)
+            {
+                <div class="col-12 fw-bold medFont alert alert-success">@TempData["Success"]</div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="col-12 alert alert-danger">@TempData["Error"]</div>
+            }
+        </div>
+    </div>
+</form>
